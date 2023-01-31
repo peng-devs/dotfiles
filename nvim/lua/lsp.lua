@@ -77,6 +77,8 @@ vim.opt.foldlevel = 1
 vim.opt.foldenable = false
 require('nvim-treesitter.configs').setup {
   ensure_installed = {
+    'help',
+    'vim',
     'lua',
     'rust',
     'javascript',
@@ -117,6 +119,26 @@ end
 -- snippet
 local luasnip = require('luasnip')
 require('luasnip.loaders.from_vscode').lazy_load()
+luasnip.add_snippets('svelte', {
+  luasnip.snippet({
+    trig = 's-script-ts',
+    name = 'svelte-script-typescript-tag',
+    dscr = 'add a ts script to your svelte file'
+  }, {
+    luasnip.text_node({'<script lang="ts">', '\t'}),
+    luasnip.insert_node(0, '// your script goes here'),
+    luasnip.text_node({'', '</script>'}),
+  }),
+  luasnip.snippet({
+    trig = 's-style-postcss',
+    name = 'svelte-style-postcss-tag',
+    dscr = 'add postcss styles to your svelte file'
+  }, {
+    luasnip.text_node({'<style lang="postcss">', '\t'}),
+    luasnip.insert_node(0, '/* your styles go here */'),
+    luasnip.text_node({'', '</style>'}),
+  })
+})
 
 -- nvim-cmp
 local has_words_before = function()
@@ -128,7 +150,7 @@ local cmp = require('cmp')
 cmp.setup {
   snippet = {
     expand = function(args)
-      require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+      luasnip.lsp_expand(args.body) -- For `luasnip` users.
     end,
   },
   mapping = cmp.mapping.preset.insert {
